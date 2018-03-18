@@ -1,11 +1,13 @@
 using System.Threading.Tasks;
 using HomeRecipes.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace HomeRecipes.Pages.Admin
 {
+    [Authorize]
     public class AddEditRecipeModel : PageModel
     {
         private readonly IRecipesService recipesService;
@@ -32,6 +34,12 @@ namespace HomeRecipes.Pages.Admin
         }   
         public async Task<IActionResult> OnPostAsync()
         {
+
+            if(!ModelState.IsValid)
+            {
+                return Page();
+            }
+
             var recipe = await recipesService.FindAsync(Id.GetValueOrDefault()) ?? new Recipe();
 
             recipe.Name = Recipe.Name;
